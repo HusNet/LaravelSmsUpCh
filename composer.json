@@ -1,0 +1,39 @@
+{
+    "name": "husnet/laravel-smsup.ch",
+    "description": "Laravel package to provide SmsUp.ch API integration.",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Gaétan Huser",
+            "homepage": "https://github.com/Husnet",
+            "role": "Developer"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {
+        "php": ">=7.3|^8.0",
+        "ext-json": "*",
+        "laravel/framework": "^8.0",
+        "guzzlehttp/guzzle": "^7.0.1",
+        "nesbot/carbon": "^2.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Husnet\\LaravelSmsUpCh\\": "src"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Husnet\\LaravelSmsUpCh\\SmsUpChServiceProvider"
+            ],
+            "aliases": {
+                "SmsUp": "Husnet\\LaravelSmsUpCh\\Facades\\SmsUpCh"
+            }
+        }
+    },
+    "config": {
+        "sort-packages": true
+    }
+}
