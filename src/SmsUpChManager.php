@@ -2,7 +2,9 @@
 
 namespace Husnet\LaravelSmsUpCh;
 
+use Exception;
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\GuzzleException;
 use Psr\Http\Message\ResponseInterface;
 
 /**
@@ -42,13 +44,14 @@ class SmsUpChManager
      */
     public function __construct(array $config)
     {
-        $this->client = new Client();
+        $this->client = new Client(['timeout' => 15] );
         $this->config = $config;
     }
 
     /**
      * @param SmsUpChMessage $message
      * @return ResponseInterface
+     * @throws Exception|GuzzleException
      */
     public function sendMessage(SmsUpChMessage $message): ResponseInterface
     {
@@ -60,21 +63,26 @@ class SmsUpChManager
         } else {
             $endpoint = self::ENDPOINT_SEND;
         }
-
         $params = '?' .
-            'text=' . $message->getText() . '&' .
+            'text=' . urlencode($message->getText()) . '&' .
             'to=' . $message->getTo() . '&' .
-            'sender=' . $this->config['sender'] . '&' .
+            'sender=' . urlencode($this->config['sender']) . '&' .
             'pushtype=alert';
 
-        $response = $this->client->get(self::API_URI . $endpoint . $params, [
-            'headers' => [
-                'Authorization' => 'Bearer ' . $token,
-                'Accept' => 'application/json'
-            ],
-        ]);
-        dd($message, self::API_URI . $endpoint . $params, $response->getBody()->getContents());
-        return $response;
+        try {
+            $response = $this->client->get(self::API_URI . $endpoint . $params, [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $token,
+                    'Accept' => 'application/json'
+                ],
+            ]);
+        }
+        catch (Exception $e) {
+            throw $e;
+        }
+        finally {
+            return $response;
+        }
     }
 
 }

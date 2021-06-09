@@ -4,6 +4,9 @@ namespace Husnet\LaravelSmsUpCh\Events;
 
 use Husnet\LaravelSmsUpCh\SmsUpChMessage;
 use Husnet\LaravelSmsUpCh\SmsUpChResponse;
+use Illuminate\Broadcasting\InteractsWithSockets;
+use Illuminate\Foundation\Events\Dispatchable;
+use Illuminate\Queue\SerializesModels;
 
 /**
  * Class SmsUpChMessageWasSent
@@ -11,6 +14,9 @@ use Husnet\LaravelSmsUpCh\SmsUpChResponse;
  */
 class SmsUpChMessageWasSent
 {
+
+    use Dispatchable, InteractsWithSockets, SerializesModels;
+
     /**
      * @var SmsUpChMessage
      */
