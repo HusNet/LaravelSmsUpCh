@@ -45,10 +45,7 @@ use Husnet\LaravelSmsUpCh\SmsUpChMessage;
 public function toSmsUpCh($notifiable)
 {
     $message = new SmsUpChMessage();
-    $message->to('41xxxxxxxxx') 
-        ->from('Foo')
-        ->text('Text of the SMS');
-
+    $message->text($this->text);
     return $message;
 }
 ```
@@ -71,19 +68,12 @@ public function routeNotificationForSmsUpCh(): string
 use Husnet\LaravelSmsUpCh\SmsUpChMessage;
 use Husnet\LaravelSmsUpCh\Facades\SmsUpCh;
 ...
-$message1 = new SmsUpChMessage();
-$message1->to('41xxxxxxxxx') 
-    ->from('Foo')
-    ->text('Text of the SMS');
-$message2 = new SmsUpChMessage();
-$message2->to('41xxxxxxxxx') 
-    ->from('Foo')
-    ->text('Text of the SMS');
-$messages = [
-    $message1->formatData(),
-    $message2->formatData()
-];
-SmsUpCh::sendMessages($messages);
+    try {
+        $phone_owner->notify(new ClientNotification($message_text));
+    }
+    catch (\Exception $e) {
+        session()->flash('error', __('Error: SMS API Timeout'));
+    }
 ```
 
 ## Available Events
@@ -109,22 +99,15 @@ class SmsUpMessageSentListener
         $response = $event->response; // Class SmsUpResponse
         $message = $event->message; // Class SmsUpMessage
 
-        if ($response->getStatus() != 'ok') {
-            $yourModel = YourModel::find($message->getCustom());
-            $yourModel->sms_status = $response->getStatus();
-            $yourModel->sms_error_id = $response->getErrorId();
-            $yourModel->sms_error_msg = $response->getErrorMsg();
-            $yourModel->save();
-        } else {
-            foreach ($response->getResult() as $responseMessage) { // class SmsUpResponseMessage
-                $yourModel = YourModel::find($responseMessage->getCustom());
-                $yourModel->sms_status = $responseMessage->getStatus();
-                $yourModel->sms_id = $responseMessage->getSmsId();
-                $yourModel->sms_error_id = $responseMessage->getErrorId();
-                $yourModel->sms_error_msg = $responseMessage->getErrorMsg();
-                $yourModel->save();
-            }
-        }
+        // flashing to session
+        session()->flash('message.to', $message->getTo());
+        session()->flash('message.text', $message->getText());
+
+        session()->flash('response.status', $response->getStatus());
+        session()->flash('response.message', $response->getMessage());
+        session()->flash('response.credits', $response->getCredits());
+        session()->flash('response.invalid', $response->getInvalid());
+
     }
 }
 ```
