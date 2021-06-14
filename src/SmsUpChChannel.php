@@ -42,9 +42,10 @@ class SmsUpChChannel
 
         $response = Facades\SmsUpCh::sendMessage($message);
 
-        $responseArray = [];
-        array_push($responseArray, json_decode($response->getBody(), true));
-        $responseMessage = new SmsUpChResponse($responseArray[0]);
+
+        $responseArray = json_decode($response->getBody(), true);
+
+        $responseMessage = new SmsUpChResponse($responseArray);
 
         Event::dispatch(new SmsUpChMessageWasSent($message, $responseMessage));
     }

@@ -14,63 +14,155 @@ class SmsUpChResponse
     private $status;
 
     /**
-     * @var array
+     * @var string
      */
-    private $result;
+    private $message;
 
     /**
      * @var string
      */
-    private $errorId;
+    private $ticket;
 
     /**
      * @var string
      */
-    private $errorMsg;
+    private $cost;
+
+    /**
+     * @var string
+     */
+    private $credits;
+
+    /**
+     * @var string
+     */
+    private $total;
+
+    /**
+     * @var string
+     */
+    private $sent;
+
+    /**
+     * @var string
+     */
+    private $blacklisted;
+
+    /**
+     * @var string
+     */
+    private $duplicated;
+
+    /**
+     * @var string
+     */
+    private $invalid;
+
+    /**
+     * @var string
+     */
+    private $npai;
 
     public function __construct(array $response)
     {
-        $this->status = $response['status'];
-        $this->errorId = $response['error_id'] ?? '';
-        $this->errorMsg = $response['error_msg'] ?? '';
-        if (isset($response['result'])) {
-          foreach ($response['result'] as $responseMessage) {
-            if (array_key_exists('status', $response)) {
-                $this->result[] = new SmsUpChResponseMessage($responseMessage);
-            }
-          }
-        }
+        $this->status = $response['status'] ?? 'unknown';
+        $this->message = $response['message'] ?? '';
+        $this->ticket = $response['ticket'] ?? '';
+        $this->cost = $response['cost'] ?? '';
+        $this->credits = $response['credits'] ?? '';
+        $this->total = $response['total'] ?? '';
+        $this->sent = $response['sent'] ?? '';
+        $this->blacklisted = $response['blacklisted'] ?? '';
+        $this->duplicated = $response['duplicated'] ?? '';
+        $this->invalid = $response['invalid'] ?? '';
+        $this->npai = $response['npai'] ?? '';
     }
 
     /**
      * @return string|null
      */
-    public function getStatus()
+    public function getStatus(): ?string
     {
         return $this->status;
     }
 
     /**
-     * @return array
+     * @return string|null
      */
-    public function getResult()
+    public function getMessage(): ?string
     {
-        return $this->result;
+        return $this->message;
     }
 
     /**
      * @return string|null
      */
-    public function getErrorId()
+    public function getTicket(): ?string
     {
-        return $this->errorId;
+        return $this->ticket;
     }
 
     /**
      * @return string|null
      */
-    public function getErrorMsg()
+    public function getCost(): ?string
     {
-        return $this->errorMsg;
+        return $this->cost;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getCredits(): ?string
+    {
+        return $this->credits;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getTotal(): ?string
+    {
+        return $this->total;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getSent(): ?string
+    {
+        return $this->sent;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getBlacklisted(): ?string
+    {
+        return $this->blacklisted;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getDuplicated(): ?string
+    {
+        return $this->duplicated;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getInvalid(): ?string
+    {
+        return $this->invalid;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getNpai(): ?string
+    {
+        return $this->npai;
     }
 }
